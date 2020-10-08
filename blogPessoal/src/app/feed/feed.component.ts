@@ -69,7 +69,4 @@ export class FeedComponent implements OnInit {
      this.tema = resp;
    })
  }
-
- 
-
 }
