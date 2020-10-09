@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment.prod';
 import { Postagem } from '../model/Postagem';
 import { Tema } from '../model/Tema';
+import { AlertasService } from '../service/alertas.service';
 import { PostagemService } from '../service/postagem.service';
 import { TemaService } from '../service/tema.service';
 
@@ -27,10 +30,19 @@ export class FeedComponent implements OnInit {
   constructor(
     private postagemService: PostagemService,
     private temaService: TemaService,
+    private alerta: AlertasService,
+    private router: Router
   ) { }
 
-  ngOnInit(){
-    window.scroll(0,0)
+  ngOnInit() {
+    let token = environment.token
+
+    if(token == '') {
+      this.router.navigate(['/login'])
+      this.alerta.showAlertInfor('Faça o login antes de entrar no feed...')
+    }
+
+    window.scroll(0, 0)
 
     this.findAllTemas()
     this.findAllPostagens()
@@ -47,12 +59,12 @@ export class FeedComponent implements OnInit {
     this.postagem.tema = this.tema
 
     if (this.postagem.titulo == null || this.postagem.texto == null || this.postagem.tema == null) {
-      alert('Preencha todos os campos antes de publicar!')
+      this.alerta.showAlertInfor('Preencha todos os campos antes de publicar!')
     } else {
       this.postagemService.postPostagem(this.postagem).subscribe((resp: Postagem) => {
         this.postagem = resp
         this.postagem = new Postagem()
-        alert('Postagem realizada com sucesso!')
+        this.alerta.showAlertSuccess('Postagem realizada com sucesso!')
         this.findAllPostagens()
       })
     }
@@ -64,9 +76,9 @@ export class FeedComponent implements OnInit {
     })
   }
 
- findByIdTema() {
-   this.temaService.getByIdTema(this.idTema).subscribe((resp: Tema) => {
-     this.tema = resp;
-   })
- }
+  findByIdTema() {
+    this.temaService.getByIdTema(this.idTema).subscribe((resp: Tema) => {
+      this.tema = resp;
+    })
+  }
 }

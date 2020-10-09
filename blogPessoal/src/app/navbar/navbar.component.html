@@ -25,7 +25,7 @@
       </li>
     </div>
     
-    <div >
+    <div *ngIf='auth.btnSair()'>
       <li class="nav-item">
         <a class="nav-link texto text-monospace text-uppercase font-weight-bold p-3" (click)='sair()'>Sair</a>
       </li>
